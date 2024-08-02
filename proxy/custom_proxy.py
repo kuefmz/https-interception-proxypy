@@ -1,28 +1,33 @@
 from proxy.http.proxy import HttpProxyBasePlugin
 from proxy.http.parser import HttpParser
+from proxy.common.utils import tls_interception_enabled
 import proxy
 import sys
+from pprint import pprint
 
 
 class OntologyTimeMachinePlugin(HttpProxyBasePlugin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.https_intercept = False
+        self.use_ssl_certificate = False
 
 
-    def before_upstream_connection(self, request: HttpParser):
-        if request.method == b'CONNECT':
-            # Only intercept if interception is enabled
-            if self.https_intercept:
-                return request
-            else:
-                return None
+    def do_intercept(self, _request: HttpParser) -> bool: 
+        """By default returns True (only) when necessary flags 
+        for TLS interception are passed. 
 
-        return request
-    
+        When TLS interception is enabled, plugins can still disable 
+        TLS interception by returning False explicitly.  This hook 
+        will allow you to run proxy instance with TLS interception 
+        flags BUT only conditionally enable interception for 
+        certain requests. 
+        """ 
 
-    def handle_upstream_chunk(self, chunk: memoryview):
-        return chunk
+        print(f'Do intercept triggered: {vars(_request)}')
+        if _request.host == b'example.org':
+            return True
+        if _request.host == b'www.example.org':
+            return False
 
 
 if __name__ == '__main__':
