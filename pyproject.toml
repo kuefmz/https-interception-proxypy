@@ -1,15 +1,27 @@
 [tool.poetry]
-name = "proxy"
+name = "proxy-test"
 version = "0.1.0"
 description = ""
 authors = ["Jenifer Tabita Ciuciu-Kiss <jenifer.tabita.ciuciu.kiss@gmail.com>"]
 readme = "README.md"
-packages = []
+#packages = []
+packages = [
+    { include = "proxy-test" }
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
-proxy-py = "^2.4.4"
+#proxy-py = "^2.4.7"
+#proxy-py = {version = "2.4.5.dev10", source = "test-pypi"}
+#proxy-py = {path = "../proxy.py-jj-fork", develop = true}
+proxy-py = {git = "https://github.com/JJ-Author/proxy.py.git", branch = "develop" }
 requests = "^2.32.3"
+
+[[tool.poetry.source]]
+name = "test-pypi"
+url = "https://test.pypi.org/simple/"
+priority = "explicit"
 
 
 [build-system]
