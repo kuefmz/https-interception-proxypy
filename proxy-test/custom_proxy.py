@@ -9,7 +9,6 @@ from pprint import pprint
 class OntologyTimeMachinePlugin(HttpProxyBasePlugin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.use_ssl_certificate = False
 
 
     def do_intercept(self, _request: HttpParser) -> bool: 
@@ -24,10 +23,14 @@ class OntologyTimeMachinePlugin(HttpProxyBasePlugin):
         """ 
 
         print(f'Do intercept triggered: {vars(_request)}')
+#        if _request._is_https_tunnel:
+#            return False
         if _request.host == b'example.org':
             return True
         if _request.host == b'www.example.org':
             return False
+        else: 
+            return True
 
 
 if __name__ == '__main__':
@@ -40,6 +43,8 @@ if __name__ == '__main__':
     sys.argv += [
         '--hostname', '0.0.0.0',
         '--port', '8899',
+        '--log-level', 'e',
+#        '--basic-auth', 'user:pass',
         '--plugins', __name__ + '.OntologyTimeMachinePlugin'
     ]
 
